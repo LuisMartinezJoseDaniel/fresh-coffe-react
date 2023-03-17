@@ -1,13 +1,13 @@
 import { createContext, useEffect, useState } from "react";
-import { categorias as categoriasDB } from "../data/categorias";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axiosClient from "../api/axios";
 
 const QuioscoContext = createContext();
 
 export const QuioscoProvider = ({ children }) => {
-  const [categorias, setCategorias] = useState(categoriasDB);
-  const [categoriaActual, setCategoriaActual] = useState(categorias[0]);
+  const [categorias, setCategorias] = useState([]);
+  const [categoriaActual, setCategoriaActual] = useState();
   const [modal, setModal] = useState(false);
 
   const [pedido, setPedido] = useState([]);
@@ -28,9 +28,8 @@ export const QuioscoProvider = ({ children }) => {
     setProducto(producto);
   };
 
-  const handleAgregarPedido = ({ categoria_id, ...producto }) => {
+  const handleAgregarPedido = ({ categoryId, ...producto }) => {
     const productoExiste = pedido.find((p) => p.id === producto.id);
-
     if (productoExiste) {
       const pedidoActualizado = pedido.map((p) =>
         p.id === producto.id ? producto : p
@@ -49,13 +48,60 @@ export const QuioscoProvider = ({ children }) => {
     setPedido(pedidoActualizado);
   };
 
+  const handleSubmitNuevaOrden = async (logout) => {
+    const token = localStorage.getItem("AUTH_TOKEN");
+    try {
+      const { data } = await axiosClient.post(
+        "/api/orders",
+        {
+          total,
+          productos: pedido.map((producto) => ({
+            id: producto.id,
+            cantidad: producto.cantidad,
+          })),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(data);
+      toast.success(data.message);
+      setTimeout(() => {
+        setPedido([]);
+      }, 1000);
+
+      setTimeout(() => {
+        logout();
+      }, 3000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const total = pedido.reduce(
-      (acc, producto) => acc + producto.precio * producto.cantidad,
+      (acc, producto) => acc + producto.price * producto.cantidad,
       0
     );
     setTotal(total);
   }, [pedido]);
+
+  const obtenerCategorias = async () => {
+    try {
+      const { data } = await axiosClient("/api/categories");
+
+      setCategorias(data.data);
+
+      setCategoriaActual(data.data[0]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    obtenerCategorias();
+  }, []);
 
   return (
     <QuioscoContext.Provider
@@ -72,6 +118,7 @@ export const QuioscoProvider = ({ children }) => {
         handleClickProducto,
         handleAgregarPedido,
         handleEliminarProductoPedido,
+        handleSubmitNuevaOrden,
       }}
     >
       {children}

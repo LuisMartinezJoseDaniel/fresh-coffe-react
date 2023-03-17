@@ -28,8 +28,8 @@ export const ModalProducto = () => {
     <div className="md:flex gap-10">
       <div className="md:w-1/3">
         <img
-          src={`/img/${producto.imagen}.jpg`}
-          alt={`Imagen producto ${producto.nombre}`}
+          src={`/img/${producto.image}.jpg`}
+          alt={`Imagen producto ${producto.name}`}
         />
       </div>
       <div className="md:w-2/3">
@@ -51,9 +51,9 @@ export const ModalProducto = () => {
             </svg>
           </button>
         </div>
-        <h1 className="text-3xl font-bold mt-5 ">{producto.nombre}</h1>
+        <h1 className="text-3xl font-bold mt-5 ">{producto.name}</h1>
         <p className="mt-5 font-black text-5xl text-amber-500">
-          {formatearDinero(producto.precio)}
+          {formatearDinero(producto.price)}
         </p>
 
         <div className="flex gap-4 mt-5">

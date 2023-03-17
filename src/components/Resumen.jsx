@@ -1,10 +1,17 @@
 import React from "react";
 import { formatearDinero } from "../helpers";
+import { useAuth } from "../hooks/useAuth";
 import { useQuiosco } from "../hooks/useQuiosco";
 import { ResumenProducto } from "./ResumenProducto";
 
 export const Resumen = () => {
-  const { pedido, total } = useQuiosco();
+  const { pedido, total, handleSubmitNuevaOrden } = useQuiosco();
+  const { logout } = useAuth({ middleware: "auth" });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await handleSubmitNuevaOrden(logout);
+  };
 
   return (
     <aside className="w-72 h-screen overflow-y-scroll p-5">
@@ -24,7 +31,7 @@ export const Resumen = () => {
         )}
 
         <p className="text-xl mt-10">Total: {formatearDinero(total)}</p>
-        <form className="w-full">
+        <form onSubmit={handleSubmit} className="w-full">
           <div className="mt-5">
             <input
               type="submit"

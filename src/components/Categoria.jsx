@@ -2,7 +2,7 @@ import React from "react";
 import { useQuiosco } from "../hooks/useQuiosco";
 
 export const Categoria = ({ categoria }) => {
-  const { icono, nombre } = categoria;
+  const { icon, name } = categoria;
   const { handleClickCategoria, categoriaActual } = useQuiosco();
 
   return (
@@ -13,11 +13,11 @@ export const Categoria = ({ categoria }) => {
       }`}
     >
       <img
-        src={`/img/icono_${icono}.svg`}
-        alt={`Imagen categoria - ${nombre}`}
+        src={`/img/icono_${icon}.svg`}
+        alt={`Imagen categoria - ${name}`}
         className="w-24"
       />
-      <p className="font-bold text-lg cursor-pointer truncate">{nombre}</p>
+      <p className="font-bold text-lg cursor-pointer truncate">{name}</p>
     </button>
   );
 };

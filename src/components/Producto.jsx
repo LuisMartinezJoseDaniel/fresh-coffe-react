@@ -3,7 +3,7 @@ import { formatearDinero } from "../helpers";
 import { useQuiosco } from "../hooks/useQuiosco";
 
 export const Producto = ({ producto }) => {
-  const { nombre, precio, imagen, categoria_id } = producto;
+  const { name, price, image } = producto;
   const { handleClickModal, handleClickProducto } = useQuiosco();
 
   const handleProductSelected = () => {
@@ -13,15 +13,11 @@ export const Producto = ({ producto }) => {
 
   return (
     <div className="border p-5 shadow bg-white">
-      <img
-        src={`/img/${imagen}.jpg`}
-        alt={`Imagen ${nombre}`}
-        className="w-full"
-      />
+      <img src={`/img/${image}.jpg`} alt={`image ${name}`} className="w-full" />
       <div className="p-5">
-        <h3 className="text-2xl font-bold">{nombre}</h3>
+        <h3 className="text-2xl font-bold">{name}</h3>
         <p className="mt-5 font-black text-4xl text-amber-500">
-          {formatearDinero(precio)}
+          {formatearDinero(price)}
         </p>
       </div>
       <button

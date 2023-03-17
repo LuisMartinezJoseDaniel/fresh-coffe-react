@@ -1,12 +1,50 @@
+import { createRef, useState } from "react";
 import { Link } from "react-router-dom";
+import axiosClient from "../api/axios";
+import { Alerta } from "../components/Alerta";
+import { useAuth } from "../hooks/useAuth";
 
 export const Registro = () => {
+  const { register } = useAuth({
+    middleware: "guest",
+    url: "/",
+  });
+
+  const nameRef = createRef();
+  const emailRef = createRef();
+  const passwordRef = createRef();
+  const passwordConfirmationRef = createRef();
+  const [errors, setErrors] = useState([]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const name = nameRef.current.value;
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    const passwordConfirmation = passwordConfirmationRef.current.value;
+
+    const datos = {
+      name,
+      email,
+      password,
+      password_confirmation: passwordConfirmation,
+    };
+
+    register(datos, setErrors);
+  };
+
   return (
     <>
       <h1 className="text-4xl font-bold">Crea tu cuenta </h1>
       <p>Crea tu cuenta llenando el formulario</p>
+      <div className="mt-5">
+        {errors.map((error, index) => (
+          <Alerta key={index}>{error}</Alerta>
+        ))}
+      </div>
       <div className="bg-white shadow-md rounded-md mt-10 px-5 py-10">
-        <form>
+        <form onSubmit={handleSubmit} noValidate>
           <div className="mb-4">
             <label htmlFor="name" className="w-full block text-slate-800">
               Nombre:
@@ -15,6 +53,8 @@ export const Registro = () => {
               type="text"
               className="mt-2 w-full block p-3 bg-gray-50"
               id="name"
+              name="name"
+              ref={nameRef}
               placeholder="Ingresa tu nombre"
             />
           </div>
@@ -25,8 +65,10 @@ export const Registro = () => {
             <input
               type="email"
               className="mt-2 w-full block p-3 bg-gray-50"
+              ref={emailRef}
               id="email"
               placeholder="Ingresa tu email"
+              name="email"
             />
           </div>
           <div className="mb-4">
@@ -36,7 +78,9 @@ export const Registro = () => {
             <input
               type="password"
               className="mt-2 w-full block p-3 bg-gray-50"
+              ref={passwordRef}
               id="password"
+              name="password"
               placeholder="Ingresa tu Contraseña"
             />
           </div>
@@ -48,9 +92,11 @@ export const Registro = () => {
               Repetir contraseña:
             </label>
             <input
-              type="password_confirmation"
+              type="password"
               className="mt-2 w-full block p-3 bg-gray-50"
+              ref={passwordConfirmationRef}
               id="password_confirmation"
+              name="password_confirmation"
               placeholder="Repite tu contraseña"
             />
           </div>

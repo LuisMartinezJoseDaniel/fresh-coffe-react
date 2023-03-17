@@ -1,26 +1,34 @@
-import React from 'react'
-import { Producto } from '../components/Producto'
-import { productos as productsDB } from '../data/productos'
-import { useQuiosco } from '../hooks/useQuiosco'
+import React, { useMemo } from "react";
+import useSWR from "swr";
+import axiosClient from "../api/axios";
+import { Producto } from "../components/Producto";
 
+import { useQuiosco } from "../hooks/useQuiosco";
+
+const fetcher = (url) => axiosClient(url).then((data) => data.data.data);
 export const Inicio = () => {
-  const { categoriaActual } = useQuiosco()
-  
-  const productos = productsDB.filter(
-    (producto) => producto.categoria_id === categoriaActual.id
+  const { categoriaActual } = useQuiosco();
+  const { data, error, isLoading } = useSWR("/api/products", fetcher);
+
+  if (isLoading || !data || !categoriaActual) {
+    return <>Cargando</>;
+  }
+
+  const productos = data.filter(
+    (producto) => producto.categoryId === categoriaActual.id
   );
 
   return (
     <div className="">
-      <h1 className="text-4xl font-black py-5">{categoriaActual.nombre}</h1>
+      <h1 className="text-4xl font-black py-5">{categoriaActual?.name}</h1>
       <p className="text-2xl my-10">
         Elige y personaliza tu pedido a continuacion
       </p>
       <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
         {productos.map((producto) => (
-          <Producto key={producto.imagen} producto={producto} />
+          <Producto key={producto.id} producto={producto} />
         ))}
       </div>
     </div>
   );
-}
+};

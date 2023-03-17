@@ -8,7 +8,7 @@ export const ResumenProducto = ({ producto }) => {
     handleClickProducto,
     handleEliminarProductoPedido,
   } = useQuiosco();
-  const { nombre, cantidad, precio } = producto;
+  const { name, cantidad, price } = producto;
 
   const handleEditarProducto = () => {
     handleClickProducto(producto);
@@ -18,13 +18,13 @@ export const ResumenProducto = ({ producto }) => {
   return (
     <div className="shadow space-y-1 p-4 bg-white">
       <div className="space-y-2">
-        <p className="text-xl font-bold">{nombre}</p>
+        <p className="text-xl font-bold">{name}</p>
         <p className="text-lg font-bold ">Cantidad: {cantidad}</p>
         <p className="text-lg font-bold text-amber-500">
-          Precio:{formatearDinero(precio)}
+          price:{formatearDinero(price)}
         </p>
         <p className="text-lg text-gray-700">
-          Subtotal:{formatearDinero(precio * cantidad)}
+          Subtotal:{formatearDinero(price * cantidad)}
         </p>
       </div>
 
