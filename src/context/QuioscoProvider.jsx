@@ -66,7 +66,7 @@ export const QuioscoProvider = ({ children }) => {
           },
         }
       );
-      console.log(data);
+
       toast.success(data.message);
       setTimeout(() => {
         setPedido([]);
@@ -75,6 +75,21 @@ export const QuioscoProvider = ({ children }) => {
       setTimeout(() => {
         logout();
       }, 3000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleMarcarProdutoAgotado = async (id) => {
+    const token = localStorage.getItem("AUTH_TOKEN");
+    try {
+      const { data } = await axiosClient.put(`/api/products/${id}`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      toast.success(data.message);
     } catch (error) {
       console.log(error);
     }
@@ -89,8 +104,13 @@ export const QuioscoProvider = ({ children }) => {
   }, [pedido]);
 
   const obtenerCategorias = async () => {
+    const token = localStorage.getItem("AUTH_TOKEN");
     try {
-      const { data } = await axiosClient("/api/categories");
+      const { data } = await axiosClient("/api/categories", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setCategorias(data.data);
 
@@ -119,6 +139,7 @@ export const QuioscoProvider = ({ children }) => {
         handleAgregarPedido,
         handleEliminarProductoPedido,
         handleSubmitNuevaOrden,
+        handleMarcarProdutoAgotado,
       }}
     >
       {children}

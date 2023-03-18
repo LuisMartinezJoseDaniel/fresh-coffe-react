@@ -5,10 +5,18 @@ import { Producto } from "../components/Producto";
 
 import { useQuiosco } from "../hooks/useQuiosco";
 
-const fetcher = (url) => axiosClient(url).then((data) => data.data.data);
+const token = localStorage.getItem("AUTH_TOKEN");
+const fetcher = (url) =>
+  axiosClient(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then((data) => data.data.data);
 export const Inicio = () => {
   const { categoriaActual } = useQuiosco();
-  const { data, error, isLoading } = useSWR("/api/products", fetcher);
+  const { data, error, isLoading } = useSWR("/api/products", fetcher, {
+    refreshInterval: 1000,
+  });
 
   if (isLoading || !data || !categoriaActual) {
     return <>Cargando</>;
@@ -26,7 +34,7 @@ export const Inicio = () => {
       </p>
       <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
         {productos.map((producto) => (
-          <Producto key={producto.id} producto={producto} />
+          <Producto key={producto.id} producto={producto} botonAgregar />
         ))}
       </div>
     </div>

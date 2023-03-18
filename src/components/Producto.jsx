@@ -2,9 +2,14 @@ import React from "react";
 import { formatearDinero } from "../helpers";
 import { useQuiosco } from "../hooks/useQuiosco";
 
-export const Producto = ({ producto }) => {
-  const { name, price, image } = producto;
-  const { handleClickModal, handleClickProducto } = useQuiosco();
+export const Producto = ({
+  producto,
+  botonAgregar = false,
+  botonDisponible = false,
+}) => {
+  const { name, price, image, id, inStock } = producto;
+  const { handleClickModal, handleClickProducto, handleMarcarProdutoAgotado } =
+    useQuiosco();
 
   const handleProductSelected = () => {
     handleClickModal();
@@ -20,13 +25,24 @@ export const Producto = ({ producto }) => {
           {formatearDinero(price)}
         </p>
       </div>
-      <button
-        type="button"
-        className="bg-indigo-600 hover:bg-indigo-800 mt-5 p-3 text-white w-full uppercase font-bold"
-        onClick={handleProductSelected}
-      >
-        Agregar
-      </button>
+      {botonAgregar && (
+        <button
+          type="button"
+          className="bg-indigo-600 hover:bg-indigo-800 mt-5 p-3 text-white w-full uppercase font-bold"
+          onClick={handleProductSelected}
+        >
+          Agregar
+        </button>
+      )}
+      {botonDisponible && (
+        <button
+          type="button"
+          className="bg-indigo-600 hover:bg-indigo-800 mt-5 p-3 text-white w-full uppercase font-bold"
+          onClick={() => handleMarcarProdutoAgotado(id)}
+        >
+          Marcar como agotado
+        </button>
+      )}
     </div>
   );
 };
